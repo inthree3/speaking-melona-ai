@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "speaking-melona"
+version = "0.1.0"
+description = ""
+authors = ["inthree3 <42310616+inthree3@users.noreply.github.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+anthropic = "^0.25.7"
+python-dotenv = "^1.0.1"
+config = "^0.5.1"
+fastapi = "^0.111.0"
+ngrok = "^1.2.0"
+pyngrok = "^7.1.6"
+
+[tool.poetry.group.dev.dependencies]
+ipykernel = "^6.29.4"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
