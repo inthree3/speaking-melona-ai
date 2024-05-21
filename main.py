@@ -20,8 +20,9 @@ async def root():
     return {"message": "Hello speaking-melona"}
 
 @app.post('/generate_story')
-def story():
-    return generate_story.generate_message()
+def story(body: dict):
+    barcodes = body.get('barcodes', [])
+    return generate_story.generate_message(barcodes)
 # %%
 # %%
 if __name__=="__main__":
