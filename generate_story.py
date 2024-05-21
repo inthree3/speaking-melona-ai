@@ -9,6 +9,14 @@ client=anthropic.Anthropic(
     api_key=os.environ["ANTHROPIC_API_KEY"]
 )
 # %%
+
+characters = {
+    '1329841072314983': {
+        'name': '크림빵',
+        'persona': '전 세계에서 가장 유명한 크림빵. 누구나 한 번쯤은 먹어봤을 정도로 유명하다. 그러나 그의 내면은 아무도 모르는 비밀로 가득하다. 그의 페르소나는 무엇일까?'
+    }
+}
+
 if __name__=="__main__":
     message = client.messages.create(
         model="claude-3-opus-20240229",
@@ -31,3 +39,6 @@ if __name__=="__main__":
     def generate_message(message):
         return message.content[0].text
     # %%
+
+def barcode_to_character(barcode):
+    return characters.get(barcode, None)
