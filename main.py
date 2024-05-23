@@ -20,8 +20,8 @@ async def root():
     return {"message": "Hello speaking-melona"}
 
 @app.post('/generate_story')
-def story():
-    return generate_story.generate_message()
+def story(characters: list[str], persona: dict[str], ending: str):
+    return generate_story.generate_message(characters, persona, ending)
 # %%
 # %%
 if __name__=="__main__":
