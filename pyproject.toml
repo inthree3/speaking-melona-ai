@@ -13,6 +13,7 @@ config = "^0.5.1"
 fastapi = "^0.111.0"
 ngrok = "^1.2.0"
 pyngrok = "^7.1.6"
+sqlalchemy = "^2.0.30"
 
 [tool.poetry.group.dev.dependencies]
 ipykernel = "^6.29.4"

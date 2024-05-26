@@ -6,9 +6,14 @@ from dotenv import load_dotenv
 import uvicorn
 
 from fastapi import FastAPI
-from pyngrok import ngrok
+
+from . import crud, models, schemas
+from .database import SessionLocal, engine
+
 load_dotenv(override=True)
 # %%
+models.Base.metadata.create_all(bind=engine)
+
 app=FastAPI()
 
 @lru_cache
