@@ -15,6 +15,7 @@ ngrok = "^1.2.0"
 pyngrok = "^7.1.6"
 sqlalchemy = "^2.0.30"
 psycopg2 = "^2.9.9"
+gunicorn = "^22.0.0"
 
 [tool.poetry.group.dev.dependencies]
 ipykernel = "^6.29.4"
