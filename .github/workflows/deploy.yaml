@@ -19,4 +19,4 @@ jobs:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Deploy to Server
-        run: ssh ubuntu@your_server_ip 'bash -s' < ./deploy.sh
+        run: ssh ubuntu@15.164.137.39 'bash -s' < ./deploy.sh
