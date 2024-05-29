@@ -40,9 +40,8 @@ def read_character(barcode: str, db: Session = Depends(get_db)):
     return db_character
 
 @app.post('/generate_story')
-def story(body: dict):
-    barcodes = body.get('barcodes', [])
-    return generate_story.generate_message(barcodes)
+def story(characters: list[str], persona: list[str], ending: str):
+    return generate_story.generate_message(characters, persona, ending)
 # %%
 # %%
 # if __name__=="__main__":

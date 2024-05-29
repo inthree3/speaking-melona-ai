@@ -1,7 +1,7 @@
 # %%
 from functools import lru_cache
 import config
-import generate_story
+from src import generate_story
 from dotenv import load_dotenv
 import uvicorn
 
