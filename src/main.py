@@ -58,8 +58,6 @@ def story(barcodes: list[str], db: Session = Depends(get_db)):
     personas = {character.name: character.prompt for character in character_persona_pairs}
 
     return generate_story.generate_drama_plot(characters, personas)
-
-
 # %%
 # %%
 # if __name__=="__main__":
