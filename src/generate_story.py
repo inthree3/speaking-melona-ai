@@ -10,6 +10,7 @@ client=OpenAI(
     api_key=os.environ["OPENAI_API_KEY"]
 )
 
+
 # %%
 def _generate_prompt(characters, persona, ending=""):
     characters_with_persona={}
@@ -54,8 +55,11 @@ def _generate_ending():
 
     return response.choices[0].message.content
 # %%
-def generate_drama_plot(characters, persona, ending=""):
-    user_prompt=_generate_prompt(characters, persona, ending="")
+def generate_drama_plot(item):
+    characters=item["characters"]
+    persona=item["persona"]
+    ending=item["ending"]
+    user_prompt=_generate_prompt(characters, persona)
 
     message = client.chat.completions.create(
     model="gpt-4o",

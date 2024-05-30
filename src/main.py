@@ -48,16 +48,26 @@ def create_character(character: schemas.CharacterCreate, db: Session = Depends(g
     return crud.create_character(db=db, character=character)
 
 
-@app.post('/generate_story')
+@app.post('/generate_drama_plot')
 def story(barcodes: list[str], db: Session = Depends(get_db)):
     character_persona_pairs = []
     for barcode in barcodes:
         character_persona_pairs.append(crud.get_character(db, barcode=barcode))
 
     characters = map(lambda x: x.name, character_persona_pairs)
-    personas = {character.name: character.prompt for character in character_persona_pairs}
 
-    return generate_story.generate_drama_plot(characters, personas)
+    try:
+        personas = {character.name: character.prompt for character in character_persona_pairs}
+    except:
+        raise HTTPException(status_code=404, detail="Character not found")
+
+    item = {
+        "characters": characters,
+        "persona": personas,
+        "ending": "",
+    }
+
+    return generate_story.generate_drama_plot(item)
 # %%
 # %%
 # if __name__=="__main__":
