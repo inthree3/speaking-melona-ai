@@ -8,5 +8,6 @@ class Character(Base):
   name = Column(String)
   barcode = Column(String, unique=True)
   prompt = Column(String)
+  image = Column(String)
 
   
