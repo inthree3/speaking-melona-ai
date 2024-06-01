@@ -24,13 +24,16 @@ def get_db():
     finally:
         db.close()
 
+
 @lru_cache
 def get_settings():
     return config.Settings()
 
+
 @app.get('/')
 async def root():
     return {"message": "Hello speaking-melona"}
+
 
 @app.get('/character/{barcode}', response_model=schemas.Character)
 def read_character(barcode: str, db: Session = Depends(get_db)):
@@ -39,9 +42,32 @@ def read_character(barcode: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Character not found")
     return db_character
 
-@app.post('/generate_story')
-def story(characters: list[str], persona: list[str], ending: str):
-    return generate_story.generate_message(characters, persona, ending)
+
+@app.post('/character', response_model=schemas.Character)
+def create_character(character: schemas.CharacterCreate, db: Session = Depends(get_db)):
+    return crud.create_character(db=db, character=character)
+
+
+@app.post('/generate_drama_plot')
+def story(barcodes: list[str], db: Session = Depends(get_db)):
+    character_persona_pairs = []
+    for barcode in barcodes:
+        character_persona_pairs.append(crud.get_character(db, barcode=barcode))
+
+    characters = map(lambda x: x.name, character_persona_pairs)
+
+    try:
+        personas = {character.name: character.prompt for character in character_persona_pairs}
+    except:
+        raise HTTPException(status_code=404, detail="Character not found")
+
+    item = {
+        "characters": characters,
+        "persona": personas,
+        "ending": "",
+    }
+
+    return generate_story.generate_drama_plot(item)
 # %%
 # %%
 # if __name__=="__main__":
