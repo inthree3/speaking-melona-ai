@@ -16,3 +16,7 @@ class Item(BaseModel):
   characters: list
   persona: dict
   ending: str
+
+class StoryGeneratorInput(BaseModel):
+  barcodes: list[str]
+  

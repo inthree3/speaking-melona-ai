@@ -56,9 +56,9 @@ def create_character(character: schemas.CharacterCreate, db: Session = Depends(g
 
 
 @app.post('/generate_drama_plot')
-def story(barcodes: list[str], db: Session = Depends(get_db)):
+def story(body: models.StoryGeneratorInput, db: Session = Depends(get_db)):
     character_persona_pairs = []
-    for barcode in barcodes:
+    for barcode in body.barcodes:
         character = crud.get_character(db, barcode=barcode)
         if character is not None:
             character_persona_pairs.append(character)
