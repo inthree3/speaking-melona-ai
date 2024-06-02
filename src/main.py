@@ -1,24 +1,20 @@
-# %%
-from functools import lru_cache
-import config
-from . import generate_story
-from dotenv import load_dotenv
-import uvicorn
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
-
-from fastapi import FastAPI, Depends, HTTPException
-
 from . import crud, models, schemas
 from .database import SessionLocal, engine
+from dotenv import load_dotenv
+import config
+from . import generate_story
 from . import X_bot
 import httpx
 import json
 
 load_dotenv(override=True)
-# %%
+
 models.Base.metadata.create_all(bind=engine)
 
-app=FastAPI()
+app = FastAPI()
 
 def get_db():
     db = SessionLocal()
@@ -27,11 +23,25 @@ def get_db():
     finally:
         db.close()
 
-
 @lru_cache
 def get_settings():
     return config.Settings()
 
+# Set up CORS
+origins = [
+    "http://localhost",
+    "http://localhost:8000",
+    "http://localhost:3000",  # Add the URLs you want to allow
+    "https://melona.chat",  # Example of a production domain
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,  # Allows specific origins
+    allow_credentials=True,
+    allow_methods=["*"],  # Allows all methods
+    allow_headers=["*"],  # Allows all headers
+)
 
 @app.get('/')
 async def root():
@@ -48,7 +58,6 @@ def read_character(barcode: str, db: Session = Depends(get_db)):
     if db_character is None:
         raise HTTPException(status_code=404, detail="Character not found")
     return db_character
-
 
 @app.post('/character', response_model=schemas.Character)
 def create_character(character: schemas.CharacterCreate, db: Session = Depends(get_db)):
@@ -96,10 +105,6 @@ def story(body: models.StoryGeneratorInput, db: Session = Depends(get_db)):
 def upload_X(content: str):
     X_bot.create_tweet(content)
     return {"message": "Tweet sent! \n Content: " + content}
-# %%
-# if __name__=="__main__":
-#     uvicorn.run(app, host="127.0.0.1", port=8000)
-# # %%
 
 @app.post('/request')
 async def request(barcode: str, content: str):
