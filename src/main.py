@@ -63,7 +63,7 @@ def story(body: models.StoryGeneratorInput, db: Session = Depends(get_db)):
         if character is not None:
             character_persona_pairs.append(character)
 
-    characters = map(lambda x: x.name, character_persona_pairs)
+    characters = list(map(lambda x: x.name, character_persona_pairs))
 
     if len(character_persona_pairs) == 0:
         raise HTTPException(status_code=404, detail="Character not found")
@@ -79,7 +79,12 @@ def story(body: models.StoryGeneratorInput, db: Session = Depends(get_db)):
         "ending": "",
     }
 
-    return generate_story.generate_drama_plot(item)
+    story = generate_story.generate_drama_plot(item)
+
+    for 캐릭터 in story["캐릭터"]:
+        캐릭터["이미지"] = character_persona_pairs[characters.index(캐릭터["이름"])].image
+
+    return story
 
 @app.post('/X_upload')
 def upload_X(content: str):
