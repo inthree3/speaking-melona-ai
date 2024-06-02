@@ -4,6 +4,7 @@ class CharacterBase(BaseModel):
   name: str
   barcode: str
   prompt: str
+  image: str
 
 class CharacterCreate(CharacterBase):
   pass

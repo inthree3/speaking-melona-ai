@@ -2,12 +2,14 @@
 from openai import OpenAI
 from dotenv import load_dotenv
 import os
+import json
 
 load_dotenv(override=True)
 # %%
 client=OpenAI(
     api_key=os.environ["OPENAI_API_KEY"]
 )
+
 
 # %%
 def _generate_prompt(characters, persona, ending=""):
@@ -58,13 +60,17 @@ def _generate_ending():
 
     return response.choices[0].message.content
 # %%
-def generate_drama_plot(characters, persona, ending=""):
-    user_prompt=_generate_prompt(characters, persona, ending="")
+def generate_drama_plot(item):
+    characters=item["characters"]
+    persona=item["persona"]
+    ending=item["ending"]
+    user_prompt=_generate_prompt(characters, persona)
 
     message = client.chat.completions.create(
     model="gpt-4o",
     max_tokens=4096,
     temperature=1,
+    response_format={ "type": "json_object" },
     messages=[
         {"role": "system",
          "content": "너는 드라마 대본을 작성하는 AI assistant야. 사람들의 관심을 끌 수 있는 대본을 작성하는 데에 관심이 있어. 창의적인 드라마 대본을 작성해줘. 한 장면으로 구성되도록 해줘. 20대 이상의 독자들도 흥미롭게 읽을 수 있도록 잔인하고, 흥미로운 악역을 이야기에 포함해줘. 캐릭터의 말투는 각자의 페르소나가 드러나게끔 설정해줘."},
@@ -80,7 +86,9 @@ def generate_drama_plot(characters, persona, ending=""):
         ]
     )
 
-    return message.choices[0].message.content
+    print(message.choices[0].message.content)
+
+    return json.loads(message.choices[0].message.content)
 # %%
 characters=["크림빵", "바나나 우유"]
 persona={
