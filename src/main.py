@@ -10,7 +10,9 @@ from fastapi import FastAPI, Depends, HTTPException
 
 from . import crud, models, schemas
 from .database import SessionLocal, engine
-from X_bot import create_tweet
+from . import X_bot
+import httpx
+import json
 
 load_dotenv(override=True)
 # %%
@@ -72,9 +74,17 @@ def story(barcodes: list[str], db: Session = Depends(get_db)):
 
 @app.post('/X_upload')
 def upload_X(content: str):
-    create_tweet(content)
+    X_bot.create_tweet(content)
     return {"message": "Tweet sent! \n Content: " + content}
 # %%
 # if __name__=="__main__":
 #     uvicorn.run(app, host="127.0.0.1", port=8000)
 # # %%
+
+@app.post('/request')
+async def request(barcode: str, content: str):
+    async with httpx.AsyncClient() as client:
+        r = await client.post("https://hooks.slack.com/workflows/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", data=json.dumps({"email": barcode, "result": content}))
+        print(r.text)
+
+    return {"message": "Request received! \n Content: " + content}
