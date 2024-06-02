@@ -10,6 +10,7 @@ from fastapi import FastAPI, Depends, HTTPException
 
 from . import crud, models, schemas
 from .database import SessionLocal, engine
+from X_bot import create_tweet
 
 load_dotenv(override=True)
 # %%
@@ -68,7 +69,11 @@ def story(barcodes: list[str], db: Session = Depends(get_db)):
     }
 
     return generate_story.generate_drama_plot(item)
-# %%
+
+@app.post('/X_upload')
+def upload_X(content: str):
+    create_tweet(content)
+    return {"message": "Tweet sent! \n Content: " + content}
 # %%
 # if __name__=="__main__":
 #     uvicorn.run(app, host="127.0.0.1", port=8000)
