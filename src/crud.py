@@ -1,6 +1,9 @@
 from sqlalchemy.orm import Session
 from . import models, schemas
 
+def get_characters(db: Session, skip: int, limit: int):
+  return db.query(models.Character).offset(skip).limit(limit).all()
+
 def get_character(db: Session, barcode: str):
   return db.query(models.Character).filter(models.Character.barcode == barcode).first()
 

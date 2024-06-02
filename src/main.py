@@ -37,6 +37,10 @@ def get_settings():
 async def root():
     return {"message": "Hello speaking-melona"}
 
+@app.get('/characters', response_model=list[schemas.Character])
+def read_characters(skip: int = 0, limit: int = 1000, db: Session = Depends(get_db)):
+    characters = crud.get_characters(db, skip=skip, limit=limit)
+    return characters
 
 @app.get('/character/{barcode}', response_model=schemas.Character)
 def read_character(barcode: str, db: Session = Depends(get_db)):
