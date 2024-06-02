@@ -55,9 +55,14 @@ def create_character(character: schemas.CharacterCreate, db: Session = Depends(g
 def story(barcodes: list[str], db: Session = Depends(get_db)):
     character_persona_pairs = []
     for barcode in barcodes:
-        character_persona_pairs.append(crud.get_character(db, barcode=barcode))
+        character = crud.get_character(db, barcode=barcode)
+        if character is not None:
+            character_persona_pairs.append(character)
 
     characters = map(lambda x: x.name, character_persona_pairs)
+
+    if len(character_persona_pairs) == 0:
+        raise HTTPException(status_code=404, detail="Character not found")
 
     try:
         personas = {character.name: character.prompt for character in character_persona_pairs}
