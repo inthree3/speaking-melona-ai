@@ -1,4 +1,5 @@
-from sqlalchemy import ARRAY, Column, Integer, String
+from sqlalchemy import Column, Integer, String
+from sqlalchemy.dialects.postgresql import ARRAY
 from .database import Base
 from pydantic import BaseModel
 

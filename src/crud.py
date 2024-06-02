@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+from sqlalchemy.dialects.postgresql import array
 from . import models, schemas
 
 def get_characters(db: Session, skip: int, limit: int):
