@@ -3,6 +3,7 @@ from openai import OpenAI
 from dotenv import load_dotenv
 import os
 import json
+from . import utils
 
 load_dotenv(override=True)
 # %%
@@ -69,7 +70,7 @@ def _generate_prompt(characters, persona, ending=""):
                 "캐릭터": "캐릭터 이름",
                 "대사": "대사"
             }}
-            # 4-5개의 대사로 구성
+            # 4-5개로 구성
         ]
     }},
     궁합: {{
@@ -77,6 +78,8 @@ def _generate_prompt(characters, persona, ending=""):
         "설명": {linked_characters} 간의 궁합 한마디 설명 (ex - ㅇㅇㅇ과 ㅇㅇㅇ은 서로를 이해하지 못하는 관계 🤷, ㅇㅇ은 ㅇㅇ와 둘이 없어 죽고 못사는 사이 😍, ㅇㅇ은 ㅇㅇ와 원수 ⚔)
     }},
     }}
+
+    You should strictly follow the format above. Do not add any unnecessary information.
     """
     return base_prompt
 # %%
@@ -92,26 +95,32 @@ def generate_drama_plot(item):
     characters=item["characters"]
     persona=item["persona"]
     ending=item["ending"]
-    user_prompt=_generate_prompt(characters, persona)
+    while True:
+        user_prompt=_generate_prompt(characters, persona)
 
-    message = client.chat.completions.create(
-    model="gpt-4o",
-    max_tokens=4096,
-    temperature=1,
-    response_format={ "type": "json_object" },
-    messages=[
-        {"role": "system",
-         "content": "너는 드라마 대본을 작성하는 AI assistant야. 사람들의 관심을 끌 수 있는 대본을 작성하는 데에 관심이 있어. 창의적인 드라마 대본을 작성해줘. 한 장면으로 구성되도록 해줘. 20대 이상의 독자들도 흥미롭게 읽을 수 있도록 잔인하고, 흥미로운 악역을 이야기에 포함해줘. 캐릭터의 말투는 각자의 페르소나가 드러나게끔 설정해줘."},
-        {
-            "role": "user",
-            "content": user_prompt
-            }
-        ]
-    )
 
-    print(message.choices[0].message.content)
+        message = client.chat.completions.create(
+        model="gpt-4o",
+        max_tokens=4096,
+        temperature=1,
+        response_format={ "type": "json_object" },
+        messages=[
+            {"role": "system",
+            "content": "너는 드라마 대본을 작성하는 AI assistant야. 사람들의 관심을 끌 수 있는 대본을 작성하는 데에 관심이 있어. 창의적인 드라마 대본을 작성해줘. 한 장면으로 구성되도록 해줘. 20대 이상의 독자들도 흥미롭게 읽을 수 있도록 잔인하고, 흥미로운 악역을 이야기에 포함해줘. 캐릭터의 말투는 각자의 페르소나가 드러나게끔 설정해줘."},
+            {
+                "role": "user",
+                "content": user_prompt
+                }
+            ]
+        )
 
-    return json.loads(message.choices[0].message.content)
+        print(message.choices[0].message.content)
+
+        if utils.validate_response(message.choices[0].message.content):
+            return json.loads(message.choices[0].message.content)
+        else:
+            continue
+        
 # %%
 characters=["크림빵", "바나나 우유"]
 persona={
