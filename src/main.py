@@ -54,6 +54,12 @@ def read_character(barcode: str, db: Session = Depends(get_db)):
 def create_character(character: schemas.CharacterCreate, db: Session = Depends(get_db)):
     return crud.create_character(db=db, character=character)
 
+@app.post('/character/{character_id}/add_barcode', response_model=schemas.Character)
+def add_barcode_to_character(character_id: int, barcode: str, db: Session = Depends(get_db)):
+    db_character = crud.add_barcode_to_character(db=db, character_id=character_id, barcode=barcode)
+    if db_character is None:
+        raise HTTPException(status_code=404, detail="Character not found or barcode already exists")
+    return db_character
 
 @app.post('/generate_drama_plot')
 def story(body: models.StoryGeneratorInput, db: Session = Depends(get_db)):

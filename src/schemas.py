@@ -2,7 +2,7 @@ from pydantic import BaseModel
 
 class CharacterBase(BaseModel):
   name: str
-  barcode: str
+  barcodes: list[str]
   prompt: str
   image: str
 
