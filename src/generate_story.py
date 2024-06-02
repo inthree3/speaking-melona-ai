@@ -65,10 +65,10 @@ def _generate_prompt(characters, persona, ending=""):
     ],
     "플롯": {{
         [
-            {
+            {{
                 "캐릭터": "캐릭터 이름",
                 "대사": "대사"
-            }
+            }}
             # 4-5개의 대사로 구성
         ]
     }},
@@ -104,12 +104,7 @@ def generate_drama_plot(item):
          "content": "너는 드라마 대본을 작성하는 AI assistant야. 사람들의 관심을 끌 수 있는 대본을 작성하는 데에 관심이 있어. 창의적인 드라마 대본을 작성해줘. 한 장면으로 구성되도록 해줘. 20대 이상의 독자들도 흥미롭게 읽을 수 있도록 잔인하고, 흥미로운 악역을 이야기에 포함해줘. 캐릭터의 말투는 각자의 페르소나가 드러나게끔 설정해줘."},
         {
             "role": "user",
-            "content": [
-                    {
-                    "type": "text",
-                    "text": user_prompt
-                    }    
-                ]
+            "content": user_prompt
             }
         ]
     )
