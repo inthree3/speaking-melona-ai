@@ -95,7 +95,10 @@ def generate_drama_plot(item):
     characters=item["characters"]
     persona=item["persona"]
     ending=item["ending"]
-    while True:
+
+    try_count=0
+    while try_count<3:
+        try_count+=1
         user_prompt=_generate_prompt(characters, persona)
 
 
@@ -120,6 +123,7 @@ def generate_drama_plot(item):
             return json.loads(message.choices[0].message.content)
         else:
             continue
+    return {"error": "Failed to generate drama plot"}
         
 # %%
 characters=["크림빵", "바나나 우유"]
