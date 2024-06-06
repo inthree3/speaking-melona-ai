@@ -1,5 +1,5 @@
 from functools import lru_cache
-from fastapi import Depends, FastAPI
+from fastapi import Depends, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from . import crud, models, schemas
@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 import config
 from . import generate_story
 from . import X_bot
+from . import utils
 import httpx
 import json
 
@@ -100,10 +101,15 @@ def story(body: models.StoryGeneratorInput, db: Session = Depends(get_db)):
     for 캐릭터 in story["캐릭터"]:
         캐릭터["이미지"] = character_persona_pairs[characters.index(캐릭터["이름"])].image
 
+    tweets = utils.format_for_twitter(story)
+
+    X_bot.post_tweet_thread(tweets)
+
     return story
 
 @app.post('/X_upload')
 def upload_X(content: str):
+    print(content)
     X_bot.create_tweet(content)
     return {"message": "Tweet sent! \n Content: " + content}
 

@@ -47,3 +47,33 @@ def validate_response(json_response):
     
     except json.JSONDecodeError:
         return False, "Invalid JSON"
+    
+
+def format_for_twitter(data):
+    plot = data["플롯"]
+    compatibility = data["궁합"]
+
+    tweets = []
+    current_tweet = ""
+
+    tweet_parts = []
+
+    for scene in plot:
+        tweet_part = f'{scene["캐릭터"]}: {scene["대사"]} '
+        tweet_parts.append(tweet_part)
+
+    compatibility_text = f'궁합 점수: {compatibility["점수"]} 설명: {compatibility["설명"]}'
+
+    tweet_parts.append(compatibility_text)
+
+    for tweet_part in tweet_parts:
+        if len(current_tweet) + len(tweet_part) > 140:
+            tweets.append(current_tweet.strip())
+            current_tweet = tweet_part
+        else:
+            current_tweet += tweet_part
+
+    if current_tweet:
+        tweets.append(current_tweet.strip())
+
+    return tweets
