@@ -1,18 +1,23 @@
 from sqlalchemy import Column, Integer, String
+from sqlalchemy.dialects.postgresql import ARRAY
 from .database import Base
 from pydantic import BaseModel
 
 class Character(Base):
-  __tablename__ = "characters"
+    __tablename__ = "characters"
 
-  id = Column(Integer, primary_key=True, index=True)
-  name = Column(String)
-  barcode = Column(String, unique=True)
-  prompt = Column(String)
-  image = Column(String)
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, nullable=False)
+    barcodes = Column(ARRAY(String), nullable=False)
+    prompt = Column(String, nullable=True)
+    image = Column(String, nullable=True)
 
   
 class Item(BaseModel):
   characters: list
   persona: dict
   ending: str
+
+class StoryGeneratorInput(BaseModel):
+  barcodes: list[str]
+  
