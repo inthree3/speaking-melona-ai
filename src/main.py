@@ -98,6 +98,8 @@ def story(body: models.StoryGeneratorInput, db: Session = Depends(get_db)):
 
     story = generate_story.generate_drama_plot(item)
 
+    print(story)
+
     for 캐릭터 in story["캐릭터"]:
         캐릭터["이미지"] = character_persona_pairs[characters.index(캐릭터["이름"])].image
 
