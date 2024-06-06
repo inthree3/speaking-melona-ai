@@ -69,8 +69,23 @@ def _generate_prompt(characters, persona, ending=""):
             {{
                 "캐릭터": "캐릭터 이름",
                 "대사": "대사"
+            }},
+            {{
+                "캐릭터": "캐릭터 이름",
+                "대사": "대사"
+            }},
+            {{
+                "캐릭터": "캐릭터 이름",
+                "대사": "대사"
+            }},
+            {{
+                "캐릭터": "캐릭터 이름",
+                "대사": "대사"
+            }},
+            {{
+                "캐릭터": "캐릭터 이름",
+                "대사": "대사"
             }}
-            # 4-5개로 구성
         ]
     }},
     궁합: {{
@@ -113,8 +128,53 @@ def generate_drama_plot(item):
             {
                 "role": "user",
                 "content": user_prompt
-                }
-            ]
+            },
+            {
+                "role": "system",
+                "content": '''JSON Format :
+{
+    "상황": string,
+    "엔딩": string,
+    "캐릭터": [
+        {
+            "이름": string,
+            "페르소나": string,
+            "레전드_설정": string
+        }
+    ],
+    "플롯": {
+        [
+            {
+                "캐릭터": string,
+                "대사": string
+            },
+            {
+                "캐릭터": string,
+                "대사": string
+            },
+            {
+                "캐릭터": string,
+                "대사": string
+            },
+            {
+                "캐릭터": string,
+                "대사": string
+            },
+            {
+                "캐릭터": string,
+                "대사": string
+            },
+        ]
+    },
+    궁합: {
+        "점수": integer,
+        "설명": string
+    },
+}
+'''
+            }
+
+        ]
         )
 
         print(message.choices[0].message.content)
